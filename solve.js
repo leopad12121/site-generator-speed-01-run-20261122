@@ -480,8 +480,7 @@ function renderMarkdown(src, env) {
         while (i < L && !isFenceClose(lines[i])) body.push(lines[i++]);
         i++;
         const cls = lang === '' ? '' : ` class="language-${escapeHtml(lang)}"`;
-        let code = '';
-        for (const l of body) code += `${escapeHtml(l)}\n`;
+        const code = body.length === 0 ? '' : `${body.map((l) => escapeHtml(l)).join('\n')}\n`;
         blocks.push(`<pre><code${cls}>${code}</code></pre>`);
         continue;
       }
@@ -565,9 +564,8 @@ function renderMarkdown(src, env) {
     if (excerpt === null) excerpt = html;
     blocks.push(`<p>${html}</p>`);
   }
-  let html = '';
-  for (const b of blocks) html += `${b}\n`;
-  return { html, toc, excerpt: excerpt ?? '' };
+  // Each block on its own lines, a "\n" after the last.
+  return { html: blocks.length === 0 ? '' : `${blocks.join('\n')}\n`, toc, excerpt: excerpt ?? '' };
 }
 
 // ---------------------------------------------------------------- templates
